@@ -2,50 +2,28 @@ version: '2'
 
 services:
   crowd:
-    image: blacklabelops/crowd
-    container_name: crowd
-    networks:
-      - crowdnet
+    image: asos/crowd
+    hostname: crowd
     volumes:
-      - crowddata:/var/atlassian/crowd
+      - /data/atlassian/crowd:/var/atlassian/crowd
     ports:
       - '8095:8095'
+    external_links:
+      - database/mysql
     environment:
       - "CROWD_PROXY_NAME="
       - "CROWD_PROXY_PORT="
       - "CROWD_PROXY_SCHEME="
-      - "CROWD_URL=http://localhost:8095/crowd"
+      - "CROWD_URL=http://localhost:8095"
       - "LOGIN_BASE_URL=http://localhost:8095"
-      - "SPLASH_CONTEXT=ROOT"
-      - "CROWD_CONTEXT=crowd"
-      - "CROWDID_CONTEXT=openidserver"
-      - "OPENID_CLIENT_CONTEXT=openidclient"
-      - "DEMO_CONTEXT=demo"
+      - "SPLASH_CONTEXT="
+      - "CROWD_CONTEXT=ROOT"
+      - "CROWDID_CONTEXT="
+      - "OPENID_CLIENT_CONTEXT="
+      - "DEMO_CONTEXT="
     labels:
-      com.blacklabelops.description: "Atlassian Crowd"
-      com.blacklabelops.service: "crowd"
+      com.asos.description: "Atlassian Crowd"
+      com.asos.service: "crowd"
+      io.rancher.scheduler.affinity:host_label: host=atlassian
+      io.rancher.container.pull_image: always
 
-  postgresql:
-    image: blacklabelops/postgres
-    hostname: postgresql
-    networks:
-      - crowdnet
-    volumes:
-      - postgresqldata:/var/lib/postgresql/data
-    environment:
-        - 'POSTGRES_DB=crowddb'
-        - 'POSTGRES_USER=crowddb'
-        - 'POSTGRES_PASSWORD=jellyfish'
-    labels:
-      com.blacklabelops.description: "PostgreSQL Database Server"
-      com.blacklabelops.service: "postgresql"
-
-volumes:
-  crowddata:
-    external: false
-  postgresqldata:
-    external: false
-
-networks:
-  crowdnet:
-    driver: bridge

@@ -1,91 +1,29 @@
 # Dockerized Atlassian Crowd
 
-[![Circle CI](https://circleci.com/gh/blacklabelops/crowd/tree/master.svg?style=shield)](https://circleci.com/gh/blacklabelops/crowd/tree/master) [![Docker Stars](https://img.shields.io/docker/stars/blacklabelops/crowd.svg)](https://hub.docker.com/r/blacklabelops/crowd/) [![Docker Pulls](https://img.shields.io/docker/pulls/blacklabelops/crowd.svg)](https://hub.docker.com/r/blacklabelops/crowd/)
+[![Docker Stars](https://img.shields.io/docker/stars/asos/crowd.svg)](https://hub.docker.com/r/asos/crowd/) [![Docker Pulls](https://img.shields.io/docker/pulls/asos/crowd.svg)](https://hub.docker.com/r/asos/crowd/)
 
 "Users can come from anywhere: Active Directory, LDAP, Crowd itself, or any mix thereof. Control permissions to all your applications in one place – Atlassian, Subversion, Google Apps, or your own apps." - [[Source](https://www.atlassian.com/software/crowd/overview)]
-
-## Supported tags and respective Dockerfile links
-
-| Version | Tags  | Dockerfile |
-|---------|-------|------------|
-|  2.10.1  | 2.10.1, latest | [Dockerfile](https://github.com/blacklabelops/crowd/blob/master/Dockerfile) |
-
-> Older tags remain but are not supported/rebuild.
 
 ## Related Images
 
 You may also like:
 
-* [blacklabelops/jira](https://github.com/blacklabelops/jira): The #1 software development tool used by agile teams
-* [blacklabelops/confluence](https://github.com/blacklabelops/confluence): Create, organize, and discuss work with your team
-* [blacklabelops/bitbucket](https://github.com/blacklabelops/bitbucket): Code, Manage, Collaborate
-* [blacklabelops/crowd](https://github.com/blacklabelops/crowd): Identity management for web apps
+* [jira](https://github.com/asosgaming/jira): The #1 software development tool used by agile teams
+* [confluence](https://github.com/asosgaming/confluence): Create, organize, and discuss work with your team
+* [bitbucket](https://github.com/asosgaming/bitbucket): Code, Manage, Collaborate
+* [crowd](https://github.com/asosgaming/crowd): Identity management for web apps
 
 # Make It Short
 
 Docker-Compose:
 
 ~~~~
-$ curl -O https://raw.githubusercontent.com/blacklabelops/crowd/master/docker-compose.yml
+$ curl -O https://raw.githubusercontent.com/asosgaming/crowd/master/docker-compose.yml
 $ docker-compose up -d
 ~~~~
 
 > Crowd will be available at http://yourdockerhost:8095
 
-Docker-CLI:
-
-Just type and follow the manual installation procedure in your browser:
-
-~~~~
-$ docker run -d -p 8095:8095 --name crowd blacklabelops/crowd
-~~~~
-
-> Point your browser to http://yourdockerhost:8095
-
-# Setup
-
-1. Start database server for Crowd.
-1. Start Crowd.
-1. Manual Crowd setup.
-
-Firstly, start the database server for Crowd:
-
-> Note: Change Password!
-
-~~~~
-$ docker run --name postgres_crowd -d \
-    -e 'POSTGRES_DB=crowddb' \
-    -e 'POSTGRES_USER=crowddb' \
-    -e 'POSTGRES_PASSWORD=jellyfish' \
-    blacklabelops/postgres
-~~~~
-
-Secondly, start Crowd:
-
-~~~~
-$ docker run -d --name crowd \
-	  --link postgres_crowd:postgres_crowd \
-	  -p 8095:8095 blacklabelops/crowd
-~~~~
-
->  Starts Crowd and links it to the postgresql instances. JDBC URL: jdbc:postgresql://postgres_crowd/crowddb
-
-Thirdly, configure your Crowd yourself and fill it with a test license.
-
-Point your browser to http://yourdockerhost:8095
-
-1. Choose `Set up Crowd`
-1. Create and enter license information
-1. Choose `New installation`
-1. In `Database configuration` choose `JDBC connection` and fill out the form:
-  * Database: PostgreSQL
-  * Driver Class Name: `org.postgresql.Driver`
-  * JDBC URL: `jdbc:postgresql://postgres_crowd:5432/crowddb`
-  * Username: `crowddb`
-  * Password: `jellyfish`
-  * Hibernate dialect: `org.hibernate.dialect.PostgreSQLDialect`
-1. In `Options` choose `http://localhost:8095/crowd` for field `Base URL` otherwise you won't be able to connect later on.
-1. Fill out the rest of the installation procedure.
 
 # Disabling The Splash Context
 
@@ -96,7 +34,7 @@ $ docker run -d --name crowd \
     -e "CROWD_URL=http://localhost:8095" \
 	  -e "SPLASH_CONTEXT=" \
     -e "CROWD_CONTEXT=ROOT" \
-	  -p 8095:8095 blacklabelops/crowd
+	  -p 8095:8095 asos/crowd
 ~~~~
 
 > Splash context will never be shown, crowd will be shown under http://youdockerhost:8095/
@@ -121,7 +59,7 @@ $ docker run -d --name crowd \
     -e "CROWD_CONTEXT=ROOT" \
     -e "CROWDID_CONTEXT=" \
     -e "OPENID_CLIENT_CONTEXT=" \
-	  -p 8095:8095 blacklabelops/crowd
+	  -p 8095:8095 asos/crowd
 ~~~~
 
 > Subapplications will not be accessible anymore. Crowd will run under root context under http://youdockerhost:8095/
@@ -145,7 +83,7 @@ $ docker run -d --name crowd \
     -e "CROWD_PROXY_NAME=myhost.example.com" \
     -e "CROWD_PROXY_PORT=443" \
     -e "CROWD_PROXY_SCHEME=https" \
-    blacklabelops/crowd
+    asos/crowd
 ~~~~
 
 > Will set the values inside the server.xml in /opt/crowd/.../server.xml
@@ -161,7 +99,7 @@ $ docker run -d --name crowd \
     -e "CROWD_PROXY_NAME=192.168.99.100" \
     -e "CROWD_PROXY_PORT=80" \
     -e "CROWD_PROXY_SCHEME=http" \
-    blacklabelops/crowd
+    asos/crowd
 ~~~~
 
 > Example with dockertools
@@ -175,7 +113,7 @@ $ docker run -d \
     --link crowd:crowd \
     -e "SERVER1REVERSE_PROXY_LOCATION1=/" \
     -e "SERVER1REVERSE_PROXY_PASS1=http://crowd:8095" \
-    blacklabelops/nginx
+    asos/nginx
 ~~~~
 
 > Crowd will be available at http://192.168.99.100.
@@ -184,7 +122,7 @@ $ docker run -d \
 
 This is an example on running Atlassian Crowd behind NGINX-HTTPS with2 Docker commands!
 
-Note: This is a self-signed certificate! Trusted certificates by letsencrypt are supported. Documentation can be found here: [blacklabelops/nginx](https://github.com/blacklabelops/nginx)
+Note: This is a self-signed certificate! Trusted certificates by letsencrypt are supported. Documentation can be found here: [asosgaming/nginx](https://github.com/asosgaming/nginx)
 
 First start Crowd:
 
@@ -193,7 +131,7 @@ $ docker run -d --name crowd \
     -e "CROWD_PROXY_NAME=192.168.99.100" \
     -e "CROWD_PROXY_PORT=80" \
     -e "CROWD_PROXY_SCHEME=http" \
-    blacklabelops/crowd
+    asos/crowd
 ~~~~
 
 > Example with dockertools
@@ -210,7 +148,7 @@ $ docker run -d \
     -e "SERVER1CERTIFICATE_DNAME=/CN=CrustyClown/OU=SpringfieldEntertainment/O=crusty.springfield.com/L=Springfield/C=US" \
     -e "SERVER1HTTPS_ENABLED=true" \
     -e "SERVER1HTTP_ENABLED=false" \
-    blacklabelops/nginx
+    asos/nginx
 ~~~~
 
 > Crowd will be available at https://192.168.99.100.
@@ -221,7 +159,7 @@ The full feature list is documented here as this image is feature identical with
 
 # Support & Feature Requests
 
-Leave a message and ask questions on Hipchat: [blacklabelops/hipchat](https://www.hipchat.com/geogBFvEM)
+Leave a message and ask questions on Hipchat: [asosgaming/hipchat](https://www.hipchat.com/geogBFvEM)
 
 # Credits
 

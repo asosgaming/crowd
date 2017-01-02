@@ -1,5 +1,5 @@
-FROM blacklabelops/java:openjdk8
-MAINTAINER Steffen Bleul <sbl@blacklabelops.com>
+FROM asos/openjdk8
+MAINTAINER Louran <louran@asosgaming.com>
 
 ARG CROWD_VERSION=2.10.1
 # permissions
